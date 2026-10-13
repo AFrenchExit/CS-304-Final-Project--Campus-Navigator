@@ -8,4 +8,4 @@ Brandon T.
 Sahand S.
 
 Status: 
-Project setup phase data collection complete. Code coming later.
+Project setup complete. Code coming later.
