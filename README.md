@@ -14,7 +14,8 @@ got walking distances from OSRM website
 
 
 # How to compile and run the precompute tool:
-
 cd src
+
 g++ -std=c++17 -O2 -DCPPHTTPLIB_OPENSSL_SUPPORT -o precompute precompute.cpp -lssl -lcrypto -lpthread
+
 ./precompute
