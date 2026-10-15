@@ -1,1 +1,14 @@
+Brandon Tornow 
+10/13/26
+
+40 point rubic:
+
++20 get the code to complie and run
++10 using BST or Dijkstra's algorithimn
++5 convert the cordinates to walking distances using OSRM
++5 comments on code
+
+Time Log:
+
+Milestone relfection: 
 
