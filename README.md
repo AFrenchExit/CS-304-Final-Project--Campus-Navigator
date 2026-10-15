@@ -6,8 +6,15 @@ Team Members: Brandon T. Sahand S.
 
 Status: Data collection done. Got 135 building coordinates from OpenStreetMap and found the walking distances from OSRM. Pushed edges.json and the precompute tool to the repo. Next is too writing the graph and Dijkstra code then the Leaflet map for the frontend.
 
-Data sources:
+# Data sources:
 
 got building coordinates from Overpass Turbo 
 
 got walking distances from OSRM website
+
+
+# How to compile and run the precompute tool:
+
+cd src
+g++ -std=c++17 -O2 -DCPPHTTPLIB_OPENSSL_SUPPORT -o precompute precompute.cpp -lssl -lcrypto -lpthread
+./precompute
