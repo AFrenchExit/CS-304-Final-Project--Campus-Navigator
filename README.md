@@ -24,4 +24,5 @@ g++ -std=c++17 -O2 -DCPPHTTPLIB_OPENSSL_SUPPORT -o precompute precompute.cpp -ls
 * This only show the first 30 lines
 
 head -30 ../data/edges.json
+
 wc -l ../data/edges.json
