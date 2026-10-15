@@ -1,11 +1,13 @@
 UTK Campus Navigator
 
-Description: A campus navigation tool for UTK. 
-Finds the shortest walking path between campus buildings using Dijkstra's algorithm on a weighted graph.
+Description: A campus navigation tool for UTK. Finds the shortest walking path between campus buildings using Dijkstra's algorithm on a weighted graph.
 
-Team Members:
-Brandon T.
-Sahand S.
+Team Members: Brandon T. Sahand S.
 
-Status: 
-Project setup complete. Code coming later.
+Status: Data collection done. Got 135 building coordinates from OpenStreetMap and found the walking distances from OSRM. Pushed edges.json and the precompute tool to the repo. Next is too writing the graph and Dijkstra code then the Leaflet map for the frontend.
+
+Data sources:
+
+got building coordinates from Overpass Turbo 
+
+got walking distances from OSRM website
