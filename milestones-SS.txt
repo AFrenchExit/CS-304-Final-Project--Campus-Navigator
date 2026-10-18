@@ -5,6 +5,10 @@ Shared repository link: https://github.com/AFrenchExit/CS-304-Final-Project--Cam
 
 Code Contribution: https://github.com/AFrenchExit/CS-304-Final-Project--Campus-Navigator/blob/main/src/precompute.cpp
 
+precompute.cpp reads buildings.json, requests walking distances from OSRM
+(in chunks of 80 to stay under the 100-coordinate limit so there is no 100-coordinate limiting factor), and writes
+data/edges.json.
+
 README: https://github.com/AFrenchExit/CS-304-Final-Project--Campus-Navigator/blob/main/README.md
 
 40 point rubric:
