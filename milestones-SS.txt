@@ -1,10 +1,12 @@
 Sahand Shaghaghi
 10/18/26
 
+Shared repository link: https://github.com/AFrenchExit/CS-304-Final-Project--Campus-Navigator
+
 40 point rubric:
 
 +20 getting the code to compile and run
-+10 using either BST or Dijkstra's algorithim
++10 using either BST or Dijkstra's algorithm
 +5 converting the coordinates to walking distances using OSRM
 +5 concise and clean comments on blocks of code
 
@@ -19,6 +21,9 @@ Hit OSRM 100-coordinate limit with 135 different buildings so needed to split th
 
 Milestone reflection:
 This milestone was primarily about data work. The hardest part was figuring out how to get walking distances without using Google's paid API feature.
-Overpass Turbo gave us coordinates and OSRM's Service gave us walking distances based on actual in real life sidewalks. 
+Overpass Turbo gave us coordinates and OSRM's Service gave us walking distances based on actual in real-life sidewalks. 
 Two issues that came up: httplib needed a special compile flag for HTTPS and OSRM only accepts 100 coordinates per request so we had to split into chunks.
 Both issues are now solved. Next up is writing a Graph class and Dijkstra so we can actually route between buildings, then plugging it into Leaflet for the web map part.
+
+Progress Summary:
+Collected coordinates for 135 different campus buildings with Overpass Turbo instead of Google's paid API feature. Used a C++ program (OSRM, json.hpp, httplib.h) that compiles, runs, and produces walking distances in meters between the different buildings. Fixed the HTTPS compile flag issue and the OSRM 100-coordinate limit by batching requests in chunks of 80. 
