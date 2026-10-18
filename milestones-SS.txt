@@ -6,7 +6,7 @@ Shared repository link: https://github.com/AFrenchExit/CS-304-Final-Project--Cam
 Code Contribution: https://github.com/AFrenchExit/CS-304-Final-Project--Campus-Navigator/blob/main/src/precompute.cpp
 
 precompute.cpp reads buildings.json, requests walking distances from OSRM
-(in chunks of 80 to stay under the 100-coordinate limit so there is no 100-coordinate limiting factor), and writes
+(in chunks of 80 to stay under OSRM's 100-coordinate limit), and writes
 data/edges.json.
 
 README: https://github.com/AFrenchExit/CS-304-Final-Project--Campus-Navigator/blob/main/README.md
@@ -21,11 +21,13 @@ README: https://github.com/AFrenchExit/CS-304-Final-Project--Campus-Navigator/bl
 Time Log:
 Searched for ways to find the best solution instead of using Google API which is a paid feature. After some time, found Overpass Turbo to get coordinates (which took 1 hour and 45 minutes).
 
-Used OSRM, json.hpp, and httplib.h to create a compilable program that gives distances in meters and uses OSRM to find the edges (which took 2 hours).
+Used OSRM, json.hpp, and httplib.h to create a compilable program that gives distances in meters and uses OSRM to find the edges (which took 2 hours and 30 minutes).
 
 Fixed compile error by adding many different flags (which took 15 minutes).
 
 Hit OSRM 100-coordinate limit with 135 different buildings so needed to split the requests of 80 to work around it (which took 30 minutes).
+
+Total Time: 5 hours.
 
 Milestone reflection:
 This milestone was primarily about data work. The hardest part was figuring out how to get walking distances without using Google's paid API feature.
@@ -37,5 +39,5 @@ Progress Summary:
 Collected coordinates for 135 different campus buildings with Overpass Turbo instead of Google's paid API feature. 
 Used a C++ program (OSRM, json.hpp, httplib.h) that compiles, runs, and produces walking distances in meters between the different buildings. 
 Fixed the HTTPS compile flag issue and the OSRM 100-coordinate limit by batching requests in chunks of 80. 
-One changed that happened was that data collection took longer than expected (which took about 1 hour and 45 minutes for the coordinates).
+One change that happened was that data collection took longer than expected (about 1 hour and 45 minutes for the coordinates).
 No help is needed as of right now.
