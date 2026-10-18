@@ -11,7 +11,7 @@ Brandon Tornow
 Time Log:
 Searched for ways to find the best solution instead of using Google API. Found Overpass Turbo to get coordinates (1 hr 45 min)
 
-Used OSRM, json.hpp, and httplib.h to create a compilable program that gives distances in meters and uses OSRM to find the edges (2 hrs)
+Used OSRM, json.hpp, and httplib.h to create a compilable program that gives distances in meters and uses OSRM to find the edges (2 hrs and 30 mins)
 
 Fixed compile error by adding many differnt flags (15 min)
 
