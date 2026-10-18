@@ -7,3 +7,18 @@ Sahand Shaghaghi
 +10 using either BST or Dijkstra's algorithim
 +5 converting the coordinates to walking distances using OSRM
 +5 concise and clean comments on blocks of code
+
+Time Log:
+Searched for ways to find the best solution instead of using Google API which is a paid feature. After some time, found Overpass Turbo to get coordinates (which took 1 hour and 45 minutes).
+
+Used OSRM, json.hpp, and httplib.h to create a compilable program that gives distances in meters and uses OSRM to find the edges (which took 2 hours).
+
+Fixed compile error by adding many different flags (which took 15 minutes).
+
+Hit OSRM 100-coordinate limit with 135 different buildings so needed to split the requests of 80 to work around it (which took 30 minutes).
+
+Milestone reflection:
+This milestone was primarily about data work. The hardest part was figuring out how to get walking distances without using Google's paid API feature.
+Overpass Turbo gave us coordinates and OSRM's Service gave us walking distances based on actual in real life sidewalks. 
+Two issues that came up: httplib needed a special compile flag for HTTPS and OSRM only accepts 100 coordinates per request so we had to split into chunks.
+Both issues are now solved. Next up is writing a Graph class and Dijkstra so we can actually route between buildings, then plugging it into Leaflet for the web map part.
