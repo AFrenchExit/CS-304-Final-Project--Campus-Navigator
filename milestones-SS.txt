@@ -29,3 +29,5 @@ Progress Summary:
 Collected coordinates for 135 different campus buildings with Overpass Turbo instead of Google's paid API feature. 
 Used a C++ program (OSRM, json.hpp, httplib.h) that compiles, runs, and produces walking distances in meters between the different buildings. 
 Fixed the HTTPS compile flag issue and the OSRM 100-coordinate limit by batching requests in chunks of 80. 
+One changed that happened was that data collection took longer than expected (which took about 1 hour and 45 minutes for the coordinates).
+No help is needed as of right now.
