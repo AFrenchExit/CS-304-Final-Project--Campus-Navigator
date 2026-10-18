@@ -1,1 +1,9 @@
+Sahand Shaghaghi
+10/18/26
 
+40 point rubric:
+
++20 getting the code to compile and run
++10 using either BST or Dijkstra's algorithim
++5 converting the coordinates to walking distances using OSRM
++5 concise and clean comments on blocks of code
