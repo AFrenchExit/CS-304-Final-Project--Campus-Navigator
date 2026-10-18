@@ -1,6 +1,10 @@
 Brandon Tornow 
 10/13/26
 
+Shared repository link: https://github.com/AFrenchExit/CS-304-Final-Project--Campus-Navigator
+
+Code Contribution: https://github.com/AFrenchExit/CS-304-Final-Project--Campus-Navigator/blob/main/src/precompute.cpp
+
 40 point rubic:
 
 +20 get the code to complie and run
@@ -23,5 +27,4 @@ Milestone relfection:
 
 This milestone was mostly data work. The hardest part was figuring out how to get walking distances without using Google's paid API.
 Overpass Turbo gave us coordinates and OSRM's Service gave us walking distances based on actual sidewalks. 
-Two issues came up: httplib needed a special compile flag for HTTPS and OSRM only accepts 100 coordinates per request so we had to split into chunks.
-Both are now solved. Next is writing a Graph class and Dijkstra so we can actually route between buildings then plugging it into Leaflet for the web map part.
+Two issues came up: httplib needed a special compile flag for HTTPS and OSRM only accepts 100 coordinates per request so we had to split into chunks. Both are now solved. Next is writing a Graph class and Dijkstra so we can actually route between buildings then plugging it into Leaflet for the web map part.
