@@ -16,11 +16,11 @@ got walking distances from OSRM website
 # How to compile and run the precompute tool:
 cd src
 
-g++ -std=c++11 -DCPPHTTPLIB_OPENSSL_SUPPORT precompute.cpp -o precompute -lssl -lcrypto
-
-(note: the ssl flags are required for the https osrm api. found this compile setup on the osrm website.)
+g++ -std=c++11 -DCPPHTTPLIB_OPENSSL_SUPPORT precompute.cpp -o precompute -lssl -lcrypto. 
 
 ./precompute
+
+((note: the ssl flags are required for the https osrm api. found this compile setup on the osrm website.)
 
 # Previw the output: 
 * This only show the first 30 lines
