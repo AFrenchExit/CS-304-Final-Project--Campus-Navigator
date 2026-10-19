@@ -1,4 +1,4 @@
-// Brandon Tornow and Sahand
+// Brandon Tornow and Sahand Shaghaghi
 // 10/14/26
 // precompute.cpp
 // Reads the data from buildings.json and calls OSRM to find the walking
