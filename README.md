@@ -20,7 +20,7 @@ g++ -std=c++11 -DCPPHTTPLIB_OPENSSL_SUPPORT precompute.cpp -o precompute -lssl -
 
 ./precompute
 
-((note: the ssl flags are required for the https osrm api. found this compile setup on the osrm website.)
+(note: the ssl flags are required for the https osrm api. found this compile setup on the osrm website.)
 
 # Previw the output: 
 * This only show the first 30 lines
