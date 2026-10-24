@@ -4,7 +4,7 @@ Description: A campus navigation tool for UTK. Finds the shortest walking path b
 
 Team Members: Brandon T. Sahand S.
 
-Status: Data collection done. Got 135 building coordinates from OpenStreetMap and found the walking distances from OSRM. Pushed edges.json and the precompute tool to the repo. Next is too writing the graph and Dijkstra code then the Leaflet map for the frontend.
+Status: Data collection done. Got 135 building coordinates from OpenStreetMap and found the walking distances from OSRM. Pushed edges.json and the precompute tool to the repo. Also just finished the Graph class and a test file to load the data into memory. Next is writing Dijkstra code then the Leaflet map for the frontend.
 
 # Data sources:
 
@@ -28,3 +28,12 @@ g++ -std=c++11 -DCPPHTTPLIB_OPENSSL_SUPPORT precompute.cpp -o precompute -lssl -
 head -30 ../data/edges.json
 
 wc -l ../data/edges.json
+
+# How to compile and test the graph:
+cd src
+
+g++ -std=c++11 -O2 -o test_graph test_graph.cpp graph.cpp
+
+./test_graph
+
+(this prints out all the neighbors and distances for hodges library to prove the graph loaded the json files right.)
