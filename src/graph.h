@@ -20,21 +20,23 @@ struct Edge {
 };
 
 class Graph {
+
 public:
+
     // loads all the buildings and edges from the json files
-    bool loadFromJson(const string& buildingsFile, const string& edgesFile);
+    bool loadFromJson(string buildingsFile, string edgesFile);
 
     // returns a list of nearby neighbors for buildings
-    vector<Edge> getNeighbors(const string& building) const;
+    vector<Edge> getNeighbors(string building);
 
     // checks if a building exists in the graph
-    bool hasBuilding(const string& building) const;
+    bool hasBuilding(string building);
 
     // returns a list of buldings
-    vector<string> getAllBuildings() const;
+    vector<string> getAllBuildings();
 
 private:
-    // adjacency list: building Name -> list of Edges
+    // A map where the key is a building name, and the value is a list of edges
     unordered_map<string, vector<Edge>> adjList;
 };
 
