@@ -1,0 +1,79 @@
+// got help from many differnet youtube toturials and also help from ai agent only (only to help create the sever and intialize it)
+<!DOCTYPE html>
+<html>
+<head>
+    <title>UTK Campus Navigator</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { height: 100vh; width: 100vw; }
+        .controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+
+    <div class="controls">
+        <h3>UTK Navigator</h3>
+        <button onclick="drawTestPath()">Draw Test Path</button>
+    </div>
+
+    <script>
+        // intilaize the map
+        var map = L.map('map').setView([35.9549, -83.9254], 16);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        L.marker([35.9550547, -83.9298395]).addTo(map).bindPopup("John C. Hodges Library");
+        L.marker([35.9575226, -83.9259919]).addTo(map).bindPopup("Ayres Hall");
+
+        var currentLine = null;
+
+        function drawTestPath() {
+            var host = window.location.protocol + "//" + window.location.hostname;
+            var url = host + ":8080/find-path?start=John%20C.%20Hodges%20Library&end=Ayres%20Hall";
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.routes && data.routes.length > 0) {
+                    var coords = data.routes[0].geometry.coordinates;
+                    var latlngs = [];
+                    for (var i = 0; i < coords.length; i++) {
+                        latlngs.push([coords[i][1], coords[i][0]]);
+                    }
+
+                    if (currentLine != null) {
+                        map.removeLayer(currentLine);
+                    }
+
+                    currentLine = L.polyline(latlngs, {color: 'blue', weight: 5}).addTo(map);
+                    map.fitBounds(currentLine.getBounds());
+                } else {
+                    alert("Could not get sidewalk data from OSRM.");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
