@@ -8,67 +8,67 @@
 
 using json = nlohmann::json;
 
-bool Graph::loadFromJson(string buildingsFile, string edgesFile) {
-    // need to load buildings
-    ifstream bFile(buildingsFile.c_str());
-    json buildingsData = json::parse(bFile);
+// bPath is buildings.json, ePath is edges.json
+bool Graph::loadFromJson(string bPath, string ePath) {
+    
+    // load buildings first
+    ifstream bIn(bPath.c_str());
+    
+    // json parse turns the file into a json object we can loop through
+    // got help from gfg for parsing json: (https://www.geeksforgeeks.org/cpp-program-to-read-and-print-a-json-file/)
+    json bData = json::parse(bIn);
 
-    // loop through every building in the json 
-    for (int i = 0; i < buildingsData.size(); i++) {
-        string name = buildingsData[i]["name"];
+    // loop through every building in the json and add it as an empty list
+    for (int i = 0; i < bData.size(); i++) {
+        string name = bData[i]["name"];
         adjList[name] = vector<Edge>(); 
     }
 
-    // load all the edges
-    ifstream eFile(edgesFile.c_str());
-    if (!eFile.is_open()) {
-        cout << "Error: Could not open " << edgesFile << "\n";
-        return false;
-    }
-    json edgesData = json::parse(eFile);
+    // load the edges next
+    ifstream eIn(ePath.c_str());
+    json eData = json::parse(eIn);
 
-    for (int i = 0; i < edgesData.size(); i++) {
-        string from = edgesData[i]["from"];
-        string to = edgesData[i]["to"];
-        double dist = edgesData[i]["distance_m"];
+    for (int i = 0; i < eData.size(); i++) {
+        string from = eData[i]["from"];
+        string to = eData[i]["to"];
+        double dist = eData[i]["distance_m"];
 
         // since walking is undirected add it both ways
-        Edge edge1;
-        edge1.destination = to;
-        edge1.distance = dist;
-        adjList[from].push_back(edge1);
+        Edge e1;
+        e1.destination = to;
+        e1.distance = dist;
+        adjList[from].push_back(e1);
 
-        Edge edge2;
-        edge2.destination = from;
-        edge2.distance = dist;
-        adjList[to].push_back(edge2);
+        Edge e2;
+        e2.destination = from;
+        e2.distance = dist;
+        adjList[to].push_back(e2);
     }
 
     cout << "Graph loaded: " << adjList.size() << " buildings.\n";
     return true;
 }
 
-vector<Edge> Graph::getNeighbors(string building) {
-    // check if the building we added exists in the array
-    if (adjList.count(building) > 0) {
-        return adjList[building];
+vector<Edge> Graph::getNeighbors(string b) {
+    // is a quick way to check if the building exists in our map. if it does we return its list of edges
+    if (adjList.count(b) > 0) {
+        return adjList[b];
     }
     // return empty vec if not found
     vector<Edge> empty;
     return empty;
 }
 
-bool Graph::hasBuilding(string building) {
-    if (adjList.count(building) > 0) {
-        return true;
-    }
-    return false;
+// this checks if the building name exists in our graph
+bool Graph::hasBuilding(string b) {
+    return adjList.count(b) > 0;
 }
 
 vector<string> Graph::getAllBuildings() {
     vector<string> names;
     
-    // an iterator loop
+    // an iterator loop. 'it' points to key and value
+    // got help from gfg for map iterators: (https://www.geeksforgeeks.org/map-iterator-in-cpp-stl/)
     for (unordered_map<string, vector<Edge>>::iterator it = adjList.begin(); it != adjList.end(); ++it) {
         names.push_back(it->first);
     }

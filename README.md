@@ -1,39 +1,31 @@
 UTK Campus Navigator
 
-Description: A campus navigation tool for UTK. Finds the shortest walking path between campus buildings using Dijkstra's algorithm on a weighted graph.
+Description: A campus navigation tool for UTK. Finds the shortest walking path between campus buildings using dijkstras algorithm on a weighted graph.
 
 Team Members: Brandon T. Sahand S.
 
-Status: Data collection done. Got 135 building coordinates from OpenStreetMap and found the walking distances from OSRM. Pushed edges.json and the precompute tool to the repo. Also just finished the Graph class and a test file to load the data into memory. Next is writing Dijkstra code then the Leaflet map for the frontend.
+Status: Project is very close to being finished just needs bug fixes and tweaks. It uses a C backend to run the dijkstra and an OSRM api to get the actual walking distances paths. The frontend is a map using leaflet. 
 
-# Data sources:
+sources we used to get the data for the map:
+Building coordinates: Overpass Turbo
+Walking distances: OSRM Foot Profile
 
-got building coordinates from Overpass Turbo 
+Folders used:
+data: has buildings.json and edges.json
+src: all the C++ files graph, dijkstra, server, and precompute
+web: just has theindex.html for the map
 
-got walking distances from OSRM website
+How to run the:
+You must need to open two terminals to run this. One for the dijkstra alg. and one to run the web sever.
 
+Terminal 1 (will need to be in src folder):
+g++ -std=c++11 -O2 -DCPPHTTPLIB_OPENSSL_SUPPORT server.cpp graph.cpp dijkstra.cpp -o server -lssl -lcrypto -lpthread
+./server
 
-# How to compile and run the precompute tool:
-cd src
+Terminal 2 (need to be in the web folder):
+python3 -m http.server 8000
 
-g++ -std=c++11 -DCPPHTTPLIB_OPENSSL_SUPPORT precompute.cpp -o precompute -lssl -lcrypto. 
+Open the website on port 8000 in your browser. Should have an option to open if ran with VS code 
 
-./precompute
-
-(note: the ssl flags are required for the https osrm api. found this compile setup on the osrm website.)
-
-# Previw the output: 
-* This only show the first 30 lines
-
-head -30 ../data/edges.json
-
-wc -l ../data/edges.json
-
-# How to compile and test the graph:
-cd src
-
-g++ -std=c++11 -O2 -o test_graph test_graph.cpp graph.cpp
-
-./test_graph
-
-(this prints out all the neighbors and distances for hodges library to prove the graph loaded the json files right.)
+Notes: 
+The ssl flags (-lssl -lcrypto) are required for the https osrm api.

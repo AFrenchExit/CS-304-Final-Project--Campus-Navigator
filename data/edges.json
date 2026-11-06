@@ -22428,5 +22428,15 @@
     "distance_m": 508.9,
     "from": "Wesley House Community Center",
     "to": "Young Memorial Hall"
+  },
+   {
+    "from": "John C. Hodges Library",
+    "to": "Neyland Stadium",
+    "distance_m": 2500
+  },
+  {
+    "from": "Ayres Hall",
+    "to": "Thompson-Boling Arena",
+    "distance_m": 1800
   }
 ]
