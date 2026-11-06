@@ -1,78 +1,189 @@
-// got help from many differnet youtube toturials and also help from ai agent only (only to help create the sever and intialize it)
+Brandon and Sahand
+UTK Navigator
+** AI was used only to help style the sidebar UI since learning html wouldve taken too long.**
+The map and route drawing logic is from the leaflet docs: (https://leafletjs.com/reference.html)
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>UTK Campus Navigator</title>
+    <title>UTK Navigator</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { margin: 0; padding: 0; }
-        #map { height: 100vh; width: 100vw; }
-        .controls {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 1000;
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-            font-family: Arial, sans-serif;
-        }
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        #map { height: 100vh; width: 100vw; z-index: 1; }
+        .sidebar { position: absolute; top: 20px; left: 20px; width: 340px; max-height: calc(100vh - 40px); background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); z-index: 1000; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); display: flex; flex-direction: column; overflow: hidden; }
+        .header { padding: 20px; border-bottom: 1px solid #e5e5ea; }
+        .header h2 { margin: 0; font-size: 22px; color: #1c1c1e; }
+        .route-info { padding: 15px 20px; background: #f2f2f7; display: none; border-bottom: 1px solid #e5e5ea;}
+        .route-info h3 { margin: 0 0 10px 0; font-size: 16px; color: #007aff; }
+        .route-info p { margin: 5px 0; font-size: 15px; color: #1c1c1e; }
+        .building-list { overflow-y: auto; flex-grow: 1; padding: 10px 0; max-height: 50vh; }
+        .building-item { padding: 12px 20px; cursor: pointer; font-size: 15px; color: #1c1c1e; display: flex; align-items: center; transition: background 0.2s; }
+        .building-item:hover { background: #f2f2f7; }
+        .building-item.start { background: #e5f1ff; border-left: 4px solid #007aff; }
+        .building-item.end { background: #ffebeb; border-left: 4px solid #ff3b30; }
+        .building-item i { margin-right: 12px; color: #8e8e93; font-size: 12px; }
+        .footer { padding: 15px 20px; border-top: 1px solid #e5e5ea; display: flex; gap: 10px; }
+        button { flex: 1; padding: 12px; border-radius: 10px; border: none; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-route { background: #007aff; color: white; }
+        .btn-route:hover { background: #0056b3; }
+        .btn-route:disabled { background: #8e8e93; cursor: not-allowed; }
+        .btn-clear { background: #e5e5ea; color: #1c1c1e; max-width: 80px; }
+        .btn-clear:hover { background: #d1d1d6; }
     </style>
 </head>
 <body>
-
     <div id="map"></div>
-
-    <div class="controls">
-        <h3>UTK Navigator</h3>
-        <button onclick="drawTestPath()">Draw Test Path</button>
+    <div class="sidebar">
+        <div class="header">
+            <h2>UTK Navigator</h2>
+        </div>
+        <div class="route-info" id="routeInfo">
+            <h3><i class="fa-solid fa-person-walking"></i> Route Options</h3>
+            <div id="routeOptionsList"></div>
+        </div>
+        <div class="building-list" id="buildingList">
+            <p style="padding: 20px; color: gray; text-align: center;">Loading buildings...</p>
+        </div>
+        <div class="footer">
+            <button class="btn-clear" onclick="clearSelection()">Reset</button>
+            <button class="btn-route" id="routeBtn" onclick="findRoute()" disabled>Get Directions</button>
+        </div>
     </div>
-
     <script>
-        // intilaize the map
+        // L.map creates the map inside the div with id="map"
         var map = L.map('map').setView([35.9549, -83.9254], 16);
         
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '© OpenStreetMap'
-        }).addTo(map);
+        // L.tileLayer loads the actual map images
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
 
-        L.marker([35.9550547, -83.9298395]).addTo(map).bindPopup("John C. Hodges Library");
-        L.marker([35.9575226, -83.9259919]).addTo(map).bindPopup("Ayres Hall");
+        var startB = null;
+        var endB = null;
+        var sMarker = null;
+        var eMarker = null;
+        var lines = []; 
+        var bData = [];
+        var host = window.location.protocol + "//" + window.location.hostname;
 
-        var currentLine = null;
+        // fetch grabs the data from our c++ server
+        // .then(response => response.json()) turns the raw text into a javascript object
+        // got help from gfg for fetch API: (https://www.geeksforgeeks.org/javascript-fetch-method/)
+        fetch(host + ':8080/buildings')
+            .then(response => response.json())
+            .then(buildings => {
+                var list = document.getElementById('buildingList');
+                list.innerHTML = ''; 
+                bData = buildings;
+                for (var i = 0; i < buildings.length; i++) {
+                    var b = buildings[i];
+                    var div = document.createElement('div');
+                    div.className = 'building-item';
+                    div.innerHTML = '<i class="fa-solid fa-location-dot"></i> ' + b.name;
+                    
+                    // this closure saves the building name so onclick knows which one was clicked
+                    (function(name) {
+                        div.onclick = function() { selectB(this, name); };
+                    })(b.name);
+                    list.appendChild(div);
+                }
+            });
 
-        function drawTestPath() {
-            var host = window.location.protocol + "//" + window.location.hostname;
-            var url = host + ":8080/find-path?start=John%20C.%20Hodges%20Library&end=Ayres%20Hall";
+        function getCoords(name) {
+            for (var i = 0; i < bData.length; i++) {
+                if (bData[i].name === name) return [bData[i].lat, bData[i].lon];
+            }
+            return null;
+        }
+
+        function selectB(element, name) {
+            if (startB === null || (startB !== null && endB !== null)) {
+                clearSel();
+                startB = name;
+                element.classList.add('start');
+                element.innerHTML = '<i class="fa-solid fa-circle-dot" style="color:#007aff;"></i> <b>Start:</b> ' + name;
+                var c = getCoords(name);
+                if(c) sMarker = L.marker(c).addTo(map).bindPopup("<b>Start:</b> " + name).openPopup();
+            } 
+            else if (startB !== null && endB === null) {
+                endB = name;
+                element.classList.add('end');
+                element.innerHTML = '<i class="fa-solid fa-location-dot" style="color:#ff3b30;"></i> <b>End:</b> ' + name;
+                document.getElementById('routeBtn').disabled = false;
+                var c = getCoords(name);
+                if(c) eMarker = L.marker(c).addTo(map).bindPopup("<b>End:</b> " + name).openPopup();
+            }
+        }
+
+        function clearSel() {
+            startB = null;
+            endB = null;
+            document.getElementById('routeBtn').disabled = true;
+            document.getElementById('routeInfo').style.display = 'none';
+            
+            var items = document.querySelectorAll('.building-item');
+            items.forEach(item => {
+                item.className = 'building-item';
+                var text = item.innerText.replace('Start: ', '').replace('End: ', '');
+                item.innerHTML = '<i class="fa-solid fa-location-dot"></i> ' + text;
+            });
+
+            for (var i = 0; i < lines.length; i++) { map.removeLayer(lines[i]); }
+            lines = [];
+            if (sMarker != null) map.removeLayer(sMarker);
+            if (eMarker != null) map.removeLayer(eMarker);
+        }
+
+        function findRoute() {
+            if (!startB || !endB) return;
+            
+            // encodeURIComponent makes sure spaces in names don't break the URL
+            var url = host + ":8080/find-path?start=" + encodeURIComponent(startB) + "&end=" + encodeURIComponent(endB);
+            document.getElementById('routeBtn').innerText = "Loading...";
             
             fetch(url)
             .then(response => response.json())
             .then(data => {
-                if (data.routes && data.routes.length > 0) {
-                    var coords = data.routes[0].geometry.coordinates;
-                    var latlngs = [];
-                    for (var i = 0; i < coords.length; i++) {
-                        latlngs.push([coords[i][1], coords[i][0]]);
-                    }
+                document.getElementById('routeBtn').innerText = "Get Directions";
+                for (var i = 0; i < lines.length; i++) { map.removeLayer(lines[i]); }
+                lines = [];
 
-                    if (currentLine != null) {
-                        map.removeLayer(currentLine);
-                    }
+                // data.routes is an array of all paths OSRM found
+                var routes = data.routes;
+                var list = document.getElementById('routeOptionsList');
+                list.innerHTML = '';
 
-                    currentLine = L.polyline(latlngs, {color: 'blue', weight: 5}).addTo(map);
-                    map.fitBounds(currentLine.getBounds());
-                } else {
-                    alert("Could not get sidewalk data from OSRM.");
+                for (var i = 0; i < routes.length; i++) {
+                    var r = routes[i];
+                    var c = r.geometry.coordinates;
+                    var pts = [];
+                    
+                    // osrm gives [lon, lat] but leaflet wants [lat, lon] so we swap them
+                    for (var j = 0; j < c.length; j++) { pts.push([c[j][1], c[j][0]]); }
+
+                    // convert meters to miles, then calculate time based on walking speed
+                    var dist = (r.distance * 0.000621371).toFixed(2);
+                    var time = Math.round(r.distance * 0.000621371 * 20);
+
+                    var col = (i === 0) ? '#007aff' : '#ff9500';
+                    var w = (i === 0) ? 6 : 5;
+                    var dash = (i === 0) ? null : '10, 10';
+                    
+                    // L.polyline draws the line on the map
+                    var l = L.polyline(pts, { color: col, weight: w, opacity: 0.9, dashArray: dash }).addTo(map);
+                    lines.push(l);
+
+                    var text = (i === 0) ? "<p style='color:#007aff; font-weight:bold;'>Fastest Route</p>" : "<p style='color:#ff9500; font-weight:bold;'>Alternative " + i + "</p>";
+                    text += "<p>Distance: " + dist + " miles</p><p>Time: " + time + " min walk</p><hr style='border: 0; border-top: 1px solid #ccc; margin: 10px 0;'>";
+                    list.innerHTML += text;
                 }
-            })
-            .catch(error => console.error('Error:', error));
+
+                map.fitBounds(lines[0].getBounds(), {padding: [50, 50]});
+                document.getElementById('routeInfo').style.display = 'block';
+            });
         }
     </script>
 </body>
