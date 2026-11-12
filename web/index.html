@@ -50,10 +50,7 @@
         </div>
     </div>
     <script>
-        // L.map creates the map inside the div with id="map"
         var map = L.map('map').setView([35.9549, -83.9254], 16);
-        
-        // L.tileLayer loads the actual map images
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
 
         var startB = null;
@@ -64,9 +61,6 @@
         var bData = [];
         var host = window.location.protocol + "//" + window.location.hostname;
 
-        // fetch grabs the data from our c++ server
-        // .then(response => response.json()) turns the raw text into a javascript object
-        // got help from gfg for fetch API: (https://www.geeksforgeeks.org/javascript-fetch-method/)
         fetch(host + ':8080/buildings')
             .then(response => response.json())
             .then(buildings => {
@@ -79,12 +73,14 @@
                     div.className = 'building-item';
                     div.innerHTML = '<i class="fa-solid fa-location-dot"></i> ' + b.name;
                     
-                    // this closure saves the building name so onclick knows which one was clicked
                     (function(name) {
                         div.onclick = function() { selectB(this, name); };
                     })(b.name);
                     list.appendChild(div);
                 }
+            })
+            .catch(error => {
+                document.getElementById('buildingList').innerHTML = '<p style="padding: 20px; color: red; text-align: center;">Error loading buildings.</p>';
             });
 
         function getCoords(name) {
@@ -135,7 +131,6 @@
         function findRoute() {
             if (!startB || !endB) return;
             
-            // encodeURIComponent makes sure spaces in names don't break the URL
             var url = host + ":8080/find-path?start=" + encodeURIComponent(startB) + "&end=" + encodeURIComponent(endB);
             document.getElementById('routeBtn').innerText = "Loading...";
             
@@ -146,7 +141,6 @@
                 for (var i = 0; i < lines.length; i++) { map.removeLayer(lines[i]); }
                 lines = [];
 
-                // data.routes is an array of all paths OSRM found
                 var routes = data.routes;
                 var list = document.getElementById('routeOptionsList');
                 list.innerHTML = '';
@@ -156,10 +150,8 @@
                     var c = r.geometry.coordinates;
                     var pts = [];
                     
-                    // osrm gives [lon, lat] but leaflet wants [lat, lon] so we swap them
                     for (var j = 0; j < c.length; j++) { pts.push([c[j][1], c[j][0]]); }
 
-                    // convert meters to miles, then calculate time based on walking speed
                     var dist = (r.distance * 0.000621371).toFixed(2);
                     var time = Math.round(r.distance * 0.000621371 * 20);
 
@@ -167,7 +159,6 @@
                     var w = (i === 0) ? 6 : 5;
                     var dash = (i === 0) ? null : '10, 10';
                     
-                    // L.polyline draws the line on the map
                     var l = L.polyline(pts, { color: col, weight: w, opacity: 0.9, dashArray: dash }).addTo(map);
                     lines.push(l);
 
@@ -178,7 +169,8 @@
 
                 map.fitBounds(lines[0].getBounds(), {padding: [50, 50]});
                 document.getElementById('routeInfo').style.display = 'block';
-            });
+            })
+            .catch(error => console.error('Error:', error));
         }
     </script>
 </body>
